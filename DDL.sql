@@ -36,6 +36,11 @@ CREATE TABLE REPAIR_HISTORY (
     new_status VARCHAR(50) NOT NULL CHECK (new_status IN ('Принят', 'В работе', 'Завершён', 'Отменён')),
     edit_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     edit_by INTEGER NOT NULL REFERENCES EMPLOYEE(employee_id)
+    CHECK (
+        (old_status = 'Принят' AND new_status IN ('Принят', 'В работе', 'Отменён')) OR
+        (old_status = 'В работе' AND new_status IN ('Завершён', 'Отменён')) OR
+        (old_status IN ('Завершён', 'Отменён') AND new_status = old_status)
+    )
 );
 
 CREATE TABLE ORDER_EMPLOYEES (
